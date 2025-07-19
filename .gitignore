@@ -20,3 +20,37 @@ rad.json
 *.flf
 #Test results file
 TestResults.xml
+
+### ERP System ###
+# Dependencies
+erp-system/*/node_modules/
+erp-system/*/package-lock.json
+
+# Build outputs
+erp-system/backend/dist/
+erp-system/frontend/build/
+
+# Environment files
+erp-system/backend/.env
+erp-system/frontend/.env.local
+erp-system/frontend/.env.production.local
+
+# Database
+erp-system/backend/prisma/migrations/
+*.db
+*.sqlite
+
+# Logs
+erp-system/*/logs/
+*.log
+
+# Uploads
+erp-system/backend/uploads/
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db

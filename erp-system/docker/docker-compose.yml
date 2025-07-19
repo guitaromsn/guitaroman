@@ -1,0 +1,74 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  db:
+    image: postgres:15
+    container_name: amanat-erp-db
+    environment:
+      POSTGRES_DB: amanat_erp
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./database/init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      - erp-network
+
+  # Backend API
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: amanat-erp-backend
+    environment:
+      NODE_ENV: production
+      DATABASE_URL: postgresql://postgres:postgres_password@db:5432/amanat_erp?schema=public
+      JWT_SECRET: your-super-secret-jwt-key-change-in-production
+      PORT: 3001
+    ports:
+      - "3001:3001"
+    depends_on:
+      - db
+    volumes:
+      - ./backend/uploads:/app/uploads
+    networks:
+      - erp-network
+
+  # Frontend React App
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: amanat-erp-frontend
+    ports:
+      - "3000:80"
+    depends_on:
+      - backend
+    networks:
+      - erp-network
+
+  # Nginx Reverse Proxy (Optional)
+  nginx:
+    image: nginx:alpine
+    container_name: amanat-erp-nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/ssl:/etc/nginx/ssl
+    depends_on:
+      - frontend
+      - backend
+    networks:
+      - erp-network
+
+volumes:
+  postgres_data:
+
+networks:
+  erp-network:
+    driver: bridge

@@ -1,0 +1,390 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// User Management
+model User {
+  id          String   @id @default(uuid())
+  email       String   @unique
+  username    String   @unique
+  password    String
+  firstName   String
+  lastName    String
+  role        UserRole @default(USER)
+  isActive    Boolean  @default(true)
+  lastLogin   DateTime?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  invoicesCreated Invoice[] @relation("InvoiceCreatedBy")
+  quotesCreated   Quote[]   @relation("QuoteCreatedBy")
+  
+  @@map("users")
+}
+
+enum UserRole {
+  ADMIN
+  MANAGER
+  ACCOUNTANT
+  SALES
+  USER
+}
+
+// Customer Management
+model Customer {
+  id          String   @id @default(uuid())
+  name        String
+  nameArabic  String?
+  email       String?
+  phone       String?
+  vatNumber   String?
+  crNumber    String?
+  address     String?
+  city        String?
+  country     String   @default("Saudi Arabia")
+  isActive    Boolean  @default(true)
+  creditLimit Decimal? @db.Decimal(12, 2)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  // Relations
+  invoices  Invoice[]
+  quotes    Quote[]
+  payments  Payment[]
+  
+  @@map("customers")
+}
+
+// Inventory Management
+model InventoryItem {
+  id             String            @id @default(uuid())
+  name           String
+  nameArabic     String?
+  description    String?
+  category       String
+  unit           String            @default("KG")
+  currentStock   Decimal           @default(0) @db.Decimal(12, 3)
+  minStock       Decimal?          @db.Decimal(12, 3)
+  avgCostPrice   Decimal?          @db.Decimal(12, 2)
+  currentPrice   Decimal?          @db.Decimal(12, 2)
+  isActive       Boolean           @default(true)
+  createdAt      DateTime          @default(now())
+  updatedAt      DateTime          @updatedAt
+
+  // Relations
+  invoiceItems   InvoiceItem[]
+  quoteItems     QuoteItem[]
+  stockMovements InventoryMovement[]
+  
+  @@map("inventory_items")
+}
+
+model InventoryMovement {
+  id          String            @id @default(uuid())
+  itemId      String
+  type        MovementType
+  quantity    Decimal           @db.Decimal(12, 3)
+  unitCost    Decimal?          @db.Decimal(12, 2)
+  reference   String?
+  notes       String?
+  createdAt   DateTime          @default(now())
+
+  // Relations
+  item        InventoryItem     @relation(fields: [itemId], references: [id])
+  
+  @@map("inventory_movements")
+}
+
+enum MovementType {
+  IN
+  OUT
+  ADJUSTMENT
+}
+
+// Invoice Management
+model Invoice {
+  id              String        @id @default(uuid())
+  invoiceNumber   String        @unique
+  customerId      String
+  type            InvoiceType   @default(SALE)
+  status          InvoiceStatus @default(DRAFT)
+  issueDate       DateTime      @default(now())
+  dueDate         DateTime?
+  subtotal        Decimal       @db.Decimal(12, 2)
+  vatAmount       Decimal       @db.Decimal(12, 2)
+  totalAmount     Decimal       @db.Decimal(12, 2)
+  paidAmount      Decimal       @default(0) @db.Decimal(12, 2)
+  notes           String?
+  zatcaUUID       String?       @unique
+  zatcaQR         String?
+  isZatcaSubmitted Boolean      @default(false)
+  createdById     String
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  // Relations
+  customer        Customer      @relation(fields: [customerId], references: [id])
+  createdBy       User          @relation("InvoiceCreatedBy", fields: [createdById], references: [id])
+  items           InvoiceItem[]
+  payments        Payment[]
+  
+  @@map("invoices")
+}
+
+enum InvoiceType {
+  SALE
+  PURCHASE
+}
+
+enum InvoiceStatus {
+  DRAFT
+  SENT
+  PAID
+  OVERDUE
+  CANCELLED
+}
+
+model InvoiceItem {
+  id          String   @id @default(uuid())
+  invoiceId   String
+  itemId      String
+  description String
+  quantity    Decimal  @db.Decimal(12, 3)
+  unitPrice   Decimal  @db.Decimal(12, 2)
+  vatRate     Decimal  @default(15) @db.Decimal(5, 2)
+  vatAmount   Decimal  @db.Decimal(12, 2)
+  totalAmount Decimal  @db.Decimal(12, 2)
+
+  // Relations
+  invoice     Invoice       @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  item        InventoryItem @relation(fields: [itemId], references: [id])
+  
+  @@map("invoice_items")
+}
+
+// Quote Management
+model Quote {
+  id            String      @id @default(uuid())
+  quoteNumber   String      @unique
+  customerId    String
+  status        QuoteStatus @default(DRAFT)
+  issueDate     DateTime    @default(now())
+  validUntil    DateTime?
+  subtotal      Decimal     @db.Decimal(12, 2)
+  vatAmount     Decimal     @db.Decimal(12, 2)
+  totalAmount   Decimal     @db.Decimal(12, 2)
+  notes         String?
+  createdById   String
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+
+  // Relations
+  customer      Customer    @relation(fields: [customerId], references: [id])
+  createdBy     User        @relation("QuoteCreatedBy", fields: [createdById], references: [id])
+  items         QuoteItem[]
+  
+  @@map("quotes")
+}
+
+enum QuoteStatus {
+  DRAFT
+  SENT
+  ACCEPTED
+  REJECTED
+  EXPIRED
+}
+
+model QuoteItem {
+  id          String   @id @default(uuid())
+  quoteId     String
+  itemId      String
+  description String
+  quantity    Decimal  @db.Decimal(12, 3)
+  unitPrice   Decimal  @db.Decimal(12, 2)
+  totalAmount Decimal  @db.Decimal(12, 2)
+
+  // Relations
+  quote       Quote         @relation(fields: [quoteId], references: [id], onDelete: Cascade)
+  item        InventoryItem @relation(fields: [itemId], references: [id])
+  
+  @@map("quote_items")
+}
+
+// Payment Management
+model Payment {
+  id              String        @id @default(uuid())
+  customerId      String
+  invoiceId       String?
+  paymentNumber   String        @unique
+  amount          Decimal       @db.Decimal(12, 2)
+  paymentMethod   PaymentMethod
+  paymentDate     DateTime      @default(now())
+  reference       String?
+  notes           String?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+
+  // Relations
+  customer        Customer      @relation(fields: [customerId], references: [id])
+  invoice         Invoice?      @relation(fields: [invoiceId], references: [id])
+  
+  @@map("payments")
+}
+
+enum PaymentMethod {
+  CASH
+  BANK_TRANSFER
+  CHECK
+  CREDIT_CARD
+}
+
+// Loan Management
+model Loan {
+  id             String       @id @default(uuid())
+  loanNumber     String       @unique
+  borrowerName   String
+  principalAmount Decimal     @db.Decimal(12, 2)
+  interestRate   Decimal      @db.Decimal(5, 2)
+  termMonths     Int
+  monthlyPayment Decimal      @db.Decimal(12, 2)
+  totalPaid      Decimal      @default(0) @db.Decimal(12, 2)
+  remainingBalance Decimal    @db.Decimal(12, 2)
+  status         LoanStatus   @default(ACTIVE)
+  startDate      DateTime
+  notes          String?
+  createdAt      DateTime     @default(now())
+  updatedAt      DateTime     @updatedAt
+
+  // Relations
+  payments       LoanPayment[]
+  
+  @@map("loans")
+}
+
+enum LoanStatus {
+  ACTIVE
+  PAID
+  DEFAULTED
+}
+
+model LoanPayment {
+  id           String   @id @default(uuid())
+  loanId       String
+  amount       Decimal  @db.Decimal(12, 2)
+  paymentDate  DateTime @default(now())
+  principal    Decimal  @db.Decimal(12, 2)
+  interest     Decimal  @db.Decimal(12, 2)
+  reference    String?
+  createdAt    DateTime @default(now())
+
+  // Relations
+  loan         Loan     @relation(fields: [loanId], references: [id])
+  
+  @@map("loan_payments")
+}
+
+// Employee Management
+model Employee {
+  id           String           @id @default(uuid())
+  employeeNumber String         @unique
+  firstName    String
+  lastName     String
+  email        String?          @unique
+  phone        String?
+  position     String
+  department   String?
+  salary       Decimal?         @db.Decimal(12, 2)
+  hireDate     DateTime
+  isActive     Boolean          @default(true)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+
+  // Relations
+  attendance   EmployeeAttendance[]
+  
+  @@map("employees")
+}
+
+model EmployeeAttendance {
+  id         String    @id @default(uuid())
+  employeeId String
+  date       DateTime
+  checkIn    DateTime?
+  checkOut   DateTime?
+  hoursWorked Decimal? @db.Decimal(4, 2)
+  notes      String?
+
+  // Relations
+  employee   Employee  @relation(fields: [employeeId], references: [id])
+  
+  @@unique([employeeId, date])
+  @@map("employee_attendance")
+}
+
+// Expense Management
+model Expense {
+  id          String        @id @default(uuid())
+  description String
+  category    String
+  amount      Decimal       @db.Decimal(12, 2)
+  vatAmount   Decimal       @default(0) @db.Decimal(12, 2)
+  expenseDate DateTime      @default(now())
+  reference   String?
+  projectId   String?
+  receipt     String?
+  notes       String?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  // Relations
+  project     Project?      @relation(fields: [projectId], references: [id])
+  
+  @@map("expenses")
+}
+
+// Project Management
+model Project {
+  id           String        @id @default(uuid())
+  name         String
+  description  String?
+  status       ProjectStatus @default(ACTIVE)
+  startDate    DateTime
+  endDate      DateTime?
+  totalBudget  Decimal?      @db.Decimal(12, 2)
+  totalCost    Decimal       @default(0) @db.Decimal(12, 2)
+  notes        String?
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  // Relations
+  expenses     Expense[]
+  
+  @@map("projects")
+}
+
+enum ProjectStatus {
+  ACTIVE
+  COMPLETED
+  CANCELLED
+  ON_HOLD
+}
+
+// System Settings
+model Setting {
+  id    String @id @default(uuid())
+  key   String @unique
+  value String
+  description String?
+  updatedAt DateTime @updatedAt
+
+  @@map("settings")
+}
