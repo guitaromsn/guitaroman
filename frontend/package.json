@@ -1,0 +1,24 @@
+{
+  "name": "amanat-al-kalima-erp-frontend",
+  "version": "1.0.0",
+  "description": "Professional frontend for Amanat Al-Kalima ERP system - Metal Scrap Business Management",
+  "main": "public/index.html",
+  "scripts": {
+    "start": "npx http-server public -p 3000 -o",
+    "build": "echo 'Static HTML build complete'",
+    "test": "echo 'No tests specified' && exit 0"
+  },
+  "keywords": [
+    "erp",
+    "frontend",
+    "metal-scrap",
+    "business-management",
+    "saudi-arabia",
+    "amanat-al-kalima"
+  ],
+  "author": "Amanat Al-Kalima Company",
+  "license": "MIT",
+  "devDependencies": {
+    "http-server": "^14.1.1"
+  }
+}
