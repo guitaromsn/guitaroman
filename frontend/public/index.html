@@ -1,0 +1,1392 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>أمانة الكلمة - Amanat Al-Kalima ERP System</title>
+    
+    <!-- External CDN Resources -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <style>
+        /* CSS Custom Properties for Theme */
+        :root {
+            --primary-color: #E58A43;
+            --primary-dark: #D4743A;
+            --secondary-color: #2C3E50;
+            --background-dark: #1a1a1a;
+            --surface-dark: #2d2d2d;
+            --text-primary: #ffffff;
+            --text-secondary: #b0b0b0;
+            --border-color: #404040;
+            --success-color: #27ae60;
+            --warning-color: #f39c12;
+            --error-color: #e74c3c;
+            --sidebar-width: 280px;
+            --header-height: 70px;
+        }
+
+        /* Global Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--background-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Main Layout */
+        .app-container {
+            display: grid;
+            grid-template-areas: 
+                "sidebar header"
+                "sidebar main";
+            grid-template-columns: var(--sidebar-width) 1fr;
+            grid-template-rows: var(--header-height) 1fr;
+            height: 100vh;
+        }
+
+        /* Header */
+        .header {
+            grid-area: header;
+            background: var(--surface-dark);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 2rem;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 1.2rem;
+            cursor: pointer;
+        }
+
+        .header-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--primary-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            grid-area: sidebar;
+            background: var(--surface-dark);
+            border-right: 1px solid var(--border-color);
+            overflow-y: auto;
+            transition: transform 0.3s ease;
+        }
+
+        .sidebar-header {
+            padding: 2rem 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .company-subtitle {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            direction: rtl;
+        }
+
+        .nav-menu {
+            padding: 1rem 0;
+        }
+
+        .nav-item {
+            margin: 0.5rem 0;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.5rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .nav-link:hover,
+        .nav-link.active {
+            background: var(--primary-color);
+            color: white;
+            border-radius: 0 25px 25px 0;
+            margin-right: 1rem;
+        }
+
+        .nav-icon {
+            width: 20px;
+            text-align: center;
+        }
+
+        /* Main Content */
+        .main-content {
+            grid-area: main;
+            padding: 2rem;
+            overflow-y: auto;
+            background: var(--background-dark);
+        }
+
+        /* Dashboard Grid */
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--surface-dark);
+            border-radius: 12px;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(229, 138, 67, 0.1);
+        }
+
+        .metric-card {
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .metric-label {
+            color: var(--text-secondary);
+            font-size: 1rem;
+        }
+
+        .metric-change {
+            font-size: 0.9rem;
+            margin-top: 0.5rem;
+        }
+
+        .positive { color: var(--success-color); }
+        .negative { color: var(--error-color); }
+
+        /* Chart Container */
+        .chart-container {
+            position: relative;
+            height: 300px;
+            margin-top: 1rem;
+        }
+
+        /* Tables */
+        .table-container {
+            background: var(--surface-dark);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .table-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .table-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .table th,
+        .table td {
+            padding: 1rem 1.5rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .table th {
+            background: var(--background-dark);
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .table tr:hover {
+            background: rgba(229, 138, 67, 0.1);
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--primary-color);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: var(--primary-dark);
+            transform: translateY(-2px);
+        }
+
+        .btn-secondary {
+            background: var(--surface-dark);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border-color);
+        }
+
+        /* Modals */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: var(--surface-dark);
+            border-radius: 12px;
+            padding: 2rem;
+            width: 90%;
+            max-width: 800px;
+            max-height: 90vh;
+            overflow-y: auto;
+            border: 1px solid var(--border-color);
+        }
+
+        .modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .modal-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .modal-close:hover {
+            color: var(--text-primary);
+        }
+
+        /* Forms */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-label {
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .form-input,
+        .form-select {
+            padding: 0.75rem;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            background: var(--background-dark);
+            color: var(--text-primary);
+            font-size: 0.95rem;
+        }
+
+        .form-input:focus,
+        .form-select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(229, 138, 67, 0.1);
+        }
+
+        /* Status Badges */
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+
+        .status-paid {
+            background: rgba(39, 174, 96, 0.1);
+            color: var(--success-color);
+        }
+
+        .status-pending {
+            background: rgba(243, 156, 18, 0.1);
+            color: var(--warning-color);
+        }
+
+        .status-overdue {
+            background: rgba(231, 76, 60, 0.1);
+            color: var(--error-color);
+        }
+
+        /* Page Sections */
+        .page-section {
+            display: none;
+        }
+
+        .page-section.active {
+            display: block;
+        }
+
+        .section-header {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        /* Item List in Forms */
+        .items-list {
+            background: var(--background-dark);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        .item-row {
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr auto;
+            gap: 1rem;
+            align-items: center;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .item-row:last-child {
+            border-bottom: none;
+        }
+
+        .remove-item {
+            background: var(--error-color);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            padding: 0.5rem;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .app-container {
+                grid-template-areas: 
+                    "header"
+                    "main";
+                grid-template-columns: 1fr;
+                grid-template-rows: var(--header-height) 1fr;
+            }
+
+            .sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 100vh;
+                z-index: 999;
+                transform: translateX(-100%);
+            }
+
+            .sidebar.active {
+                transform: translateX(0);
+            }
+
+            .menu-toggle {
+                display: block;
+            }
+
+            .main-content {
+                padding: 1rem;
+            }
+
+            .dashboard-grid {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .item-row {
+                grid-template-columns: 1fr;
+                gap: 0.5rem;
+            }
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--background-dark);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--primary-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--primary-dark);
+        }
+
+        /* Animation for loading states */
+        .loading {
+            opacity: 0.6;
+            pointer-events: none;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="header">
+            <div class="header-left">
+                <button class="menu-toggle" onclick="toggleSidebar()">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <h1 class="header-title">أمانة الكلمة ERP</h1>
+            </div>
+            <div class="header-right">
+                <span>مرحباً، المدير</span>
+                <div class="user-avatar">م</div>
+            </div>
+        </header>
+
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">أمانة الكلمة</div>
+                <div class="company-subtitle">شركة أمانة الكلمة لتجارة خردة المعادن</div>
+            </div>
+            
+            <nav class="nav-menu">
+                <div class="nav-item">
+                    <a class="nav-link active" onclick="showSection('dashboard')">
+                        <i class="nav-icon fas fa-chart-line"></i>
+                        <span>لوحة التحكم</span>
+                    </a>
+                </div>
+                
+                <div class="nav-item">
+                    <a class="nav-link" onclick="showSection('invoices')">
+                        <i class="nav-icon fas fa-file-invoice"></i>
+                        <span>الفواتير</span>
+                    </a>
+                </div>
+                
+                <div class="nav-item">
+                    <a class="nav-link" onclick="showSection('quotes')">
+                        <i class="nav-icon fas fa-quote-left"></i>
+                        <span>عروض الأسعار</span>
+                    </a>
+                </div>
+                
+                <div class="nav-item">
+                    <a class="nav-link" onclick="showSection('receipts')">
+                        <i class="nav-icon fas fa-receipt"></i>
+                        <span>سندات القبض</span>
+                    </a>
+                </div>
+                
+                <div class="nav-item">
+                    <a class="nav-link" onclick="showSection('credit-notes')">
+                        <i class="nav-icon fas fa-file-alt"></i>
+                        <span>إشعار دائن</span>
+                    </a>
+                </div>
+                
+                <div class="nav-item">
+                    <a class="nav-link" onclick="showSection('inventory')">
+                        <i class="nav-icon fas fa-boxes"></i>
+                        <span>المخزون</span>
+                    </a>
+                </div>
+                
+                <div class="nav-item">
+                    <a class="nav-link" onclick="showSection('customers')">
+                        <i class="nav-icon fas fa-users"></i>
+                        <span>العملاء</span>
+                    </a>
+                </div>
+                
+                <div class="nav-item">
+                    <a class="nav-link" onclick="showSection('projects')">
+                        <i class="nav-icon fas fa-project-diagram"></i>
+                        <span>المشاريع</span>
+                    </a>
+                </div>
+                
+                <div class="nav-item">
+                    <a class="nav-link" onclick="showSection('employees')">
+                        <i class="nav-icon fas fa-user-tie"></i>
+                        <span>الموظفين</span>
+                    </a>
+                </div>
+                
+                <div class="nav-item">
+                    <a class="nav-link" onclick="showSection('expenses')">
+                        <i class="nav-icon fas fa-money-bill-wave"></i>
+                        <span>المصروفات</span>
+                    </a>
+                </div>
+                
+                <div class="nav-item">
+                    <a class="nav-link" onclick="showSection('loans')">
+                        <i class="nav-icon fas fa-hand-holding-usd"></i>
+                        <span>القروض</span>
+                    </a>
+                </div>
+                
+                <div class="nav-item">
+                    <a class="nav-link" onclick="showSection('reports')">
+                        <i class="nav-icon fas fa-chart-bar"></i>
+                        <span>التقارير</span>
+                    </a>
+                </div>
+                
+                <div class="nav-item">
+                    <a class="nav-link" onclick="showSection('vat')">
+                        <i class="nav-icon fas fa-percentage"></i>
+                        <span>ضريبة القيمة المضافة</span>
+                    </a>
+                </div>
+                
+                <div class="nav-item">
+                    <a class="nav-link" onclick="showSection('settings')">
+                        <i class="nav-icon fas fa-cog"></i>
+                        <span>الإعدادات</span>
+                    </a>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Dashboard Section -->
+            <section id="dashboard" class="page-section active">
+                <div class="section-header">
+                    <h2 class="section-title">لوحة التحكم</h2>
+                    <p class="section-subtitle">نظرة عامة على أداء الشركة</p>
+                </div>
+
+                <div class="dashboard-grid">
+                    <div class="card metric-card">
+                        <div class="metric-value">SAR 125,450</div>
+                        <div class="metric-label">إجمالي المستحقات</div>
+                        <div class="metric-change positive">
+                            <i class="fas fa-arrow-up"></i> +12.5%
+                        </div>
+                    </div>
+
+                    <div class="card metric-card">
+                        <div class="metric-value">SAR 23,890</div>
+                        <div class="metric-label">المبالغ المتأخرة</div>
+                        <div class="metric-change negative">
+                            <i class="fas fa-arrow-down"></i> -5.2%
+                        </div>
+                    </div>
+
+                    <div class="card metric-card">
+                        <div class="metric-value">SAR 89,670</div>
+                        <div class="metric-label">إجمالي المبيعات</div>
+                        <div class="metric-change positive">
+                            <i class="fas fa-arrow-up"></i> +18.7%
+                        </div>
+                    </div>
+
+                    <div class="card metric-card">
+                        <div class="metric-value">SAR 13,451</div>
+                        <div class="metric-label">ضريبة القيمة المضافة</div>
+                        <div class="metric-change positive">
+                            <i class="fas fa-arrow-up"></i> +15.0%
+                        </div>
+                    </div>
+                </div>
+
+                <div class="dashboard-grid">
+                    <div class="card">
+                        <h3>مبيعات الشهر</h3>
+                        <div class="chart-container">
+                            <canvas id="salesChart"></canvas>
+                        </div>
+                    </div>
+
+                    <div class="card">
+                        <h3>أسعار المعادن اليوم</h3>
+                        <div class="table-container">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>المعدن</th>
+                                        <th>السعر (ريال/كيلو)</th>
+                                        <th>التغيير</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>النحاس العاري</td>
+                                        <td>SAR 30.00</td>
+                                        <td class="positive">+2.5%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>نحاس رقم 1</td>
+                                        <td>SAR 28.00</td>
+                                        <td class="positive">+1.8%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>الألومنيوم</td>
+                                        <td>SAR 6.50</td>
+                                        <td class="negative">-0.5%</td>
+                                    </tr>
+                                    <tr>
+                                        <td>الحديد الصلب</td>
+                                        <td>SAR 1.50</td>
+                                        <td class="positive">+3.2%</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="table-header">
+                        <h3 class="table-title">آخر المعاملات</h3>
+                        <button class="btn btn-primary" onclick="showModal('invoiceModal')">
+                            <i class="fas fa-plus"></i> فاتورة جديدة
+                        </button>
+                    </div>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>رقم الفاتورة</th>
+                                <th>العميل</th>
+                                <th>المبلغ</th>
+                                <th>التاريخ</th>
+                                <th>الحالة</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>INV-2024-001</td>
+                                <td>أرامكو السعودية</td>
+                                <td>SAR 45,230</td>
+                                <td>2024-01-15</td>
+                                <td><span class="status-badge status-paid">مدفوعة</span></td>
+                            </tr>
+                            <tr>
+                                <td>INV-2024-002</td>
+                                <td>مجموعة الراشد</td>
+                                <td>SAR 28,910</td>
+                                <td>2024-01-14</td>
+                                <td><span class="status-badge status-pending">معلقة</span></td>
+                            </tr>
+                            <tr>
+                                <td>INV-2024-003</td>
+                                <td>شركة المعادن المتقدمة</td>
+                                <td>SAR 67,450</td>
+                                <td>2024-01-13</td>
+                                <td><span class="status-badge status-overdue">متأخرة</span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Other sections will be shown/hidden dynamically -->
+            <section id="invoices" class="page-section">
+                <div class="section-header">
+                    <h2 class="section-title">إدارة الفواتير</h2>
+                    <p class="section-subtitle">إنشاء وإدارة فواتير المبيعات</p>
+                </div>
+                
+                <div class="card">
+                    <div class="table-header">
+                        <h3 class="table-title">قائمة الفواتير</h3>
+                        <button class="btn btn-primary" onclick="showModal('invoiceModal')">
+                            <i class="fas fa-plus"></i> فاتورة جديدة
+                        </button>
+                    </div>
+                    <!-- Invoice table content would go here -->
+                </div>
+            </section>
+
+            <!-- Add similar sections for other modules -->
+            <section id="quotes" class="page-section">
+                <div class="section-header">
+                    <h2 class="section-title">عروض الأسعار</h2>
+                    <p class="section-subtitle">إنشاء وإدارة عروض الأسعار للعملاء</p>
+                </div>
+            </section>
+
+            <section id="receipts" class="page-section">
+                <div class="section-header">
+                    <h2 class="section-title">سندات القبض</h2>
+                    <p class="section-subtitle">إدارة سندات قبض المدفوعات</p>
+                </div>
+            </section>
+
+            <section id="credit-notes" class="page-section">
+                <div class="section-header">
+                    <h2 class="section-title">إشعارات الدائن</h2>
+                    <p class="section-subtitle">إنشاء وإدارة إشعارات الدائن</p>
+                </div>
+            </section>
+
+            <section id="inventory" class="page-section">
+                <div class="section-header">
+                    <h2 class="section-title">إدارة المخزون</h2>
+                    <p class="section-subtitle">متابعة مخزون المعادن والمواد</p>
+                </div>
+                
+                <div class="card">
+                    <h3>أسعار المعادن الحالية</h3>
+                    <div class="table-container">
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th>نوع المعدن</th>
+                                    <th>الوصف</th>
+                                    <th>السعر (ريال/كيلو)</th>
+                                    <th>الكمية المتوفرة</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>الحديد الحديدي</td>
+                                    <td>قضبان الصلب</td>
+                                    <td>SAR 1.50</td>
+                                    <td>2,500 كيلو</td>
+                                </tr>
+                                <tr>
+                                    <td>الحديد الحديدي</td>
+                                    <td>حديد عام</td>
+                                    <td>SAR 1.20</td>
+                                    <td>1,800 كيلو</td>
+                                </tr>
+                                <tr>
+                                    <td>الحديد الحديدي</td>
+                                    <td>حديد الزهر</td>
+                                    <td>SAR 1.00</td>
+                                    <td>3,200 كيلو</td>
+                                </tr>
+                                <tr>
+                                    <td>المعادن غير الحديدية</td>
+                                    <td>النحاس</td>
+                                    <td>SAR 25.00</td>
+                                    <td>450 كيلو</td>
+                                </tr>
+                                <tr>
+                                    <td>المعادن غير الحديدية</td>
+                                    <td>الألومنيوم</td>
+                                    <td>SAR 6.50</td>
+                                    <td>890 كيلو</td>
+                                </tr>
+                                <tr>
+                                    <td>المعادن غير الحديدية</td>
+                                    <td>البرونز</td>
+                                    <td>SAR 18.00</td>
+                                    <td>120 كيلو</td>
+                                </tr>
+                                <tr>
+                                    <td>درجات النحاس</td>
+                                    <td>النحاس العاري اللامع</td>
+                                    <td>SAR 30.00</td>
+                                    <td>200 كيلو</td>
+                                </tr>
+                                <tr>
+                                    <td>درجات النحاس</td>
+                                    <td>نحاس رقم 1</td>
+                                    <td>SAR 28.00</td>
+                                    <td>350 كيلو</td>
+                                </tr>
+                                <tr>
+                                    <td>درجات النحاس</td>
+                                    <td>نحاس رقم 2</td>
+                                    <td>SAR 25.00</td>
+                                    <td>480 كيلو</td>
+                                </tr>
+                                <tr>
+                                    <td>كابلات النحاس</td>
+                                    <td>كابل النحاس</td>
+                                    <td>SAR 28.00</td>
+                                    <td>150 كيلو</td>
+                                </tr>
+                                <tr>
+                                    <td>كابلات النحاس</td>
+                                    <td>كابل B</td>
+                                    <td>SAR 26.00</td>
+                                    <td>220 كيلو</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+            <section id="customers" class="page-section">
+                <div class="section-header">
+                    <h2 class="section-title">إدارة العملاء</h2>
+                    <p class="section-subtitle">معلومات وتفاصيل العملاء</p>
+                </div>
+            </section>
+
+            <section id="projects" class="page-section">
+                <div class="section-header">
+                    <h2 class="section-title">إدارة المشاريع</h2>
+                    <p class="section-subtitle">متابعة المشاريع الجارية</p>
+                </div>
+            </section>
+
+            <section id="employees" class="page-section">
+                <div class="section-header">
+                    <h2 class="section-title">إدارة الموظفين</h2>
+                    <p class="section-subtitle">معلومات الموظفين والرواتب</p>
+                </div>
+            </section>
+
+            <section id="expenses" class="page-section">
+                <div class="section-header">
+                    <h2 class="section-title">إدارة المصروفات</h2>
+                    <p class="section-subtitle">تتبع المصروفات والتكاليف</p>
+                </div>
+            </section>
+
+            <section id="loans" class="page-section">
+                <div class="section-header">
+                    <h2 class="section-title">إدارة القروض</h2>
+                    <p class="section-subtitle">متابعة القروض والسلف</p>
+                </div>
+            </section>
+
+            <section id="reports" class="page-section">
+                <div class="section-header">
+                    <h2 class="section-title">التقارير</h2>
+                    <p class="section-subtitle">تقارير مالية وإحصائية شاملة</p>
+                </div>
+            </section>
+
+            <section id="vat" class="page-section">
+                <div class="section-header">
+                    <h2 class="section-title">ضريبة القيمة المضافة</h2>
+                    <p class="section-subtitle">إدارة ضريبة القيمة المضافة 15%</p>
+                </div>
+                
+                <div class="card">
+                    <h3>حاسبة ضريبة القيمة المضافة</h3>
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label class="form-label">المبلغ قبل الضريبة</label>
+                            <input type="number" class="form-input" id="vatAmount" placeholder="0.00">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">ضريبة القيمة المضافة (15%)</label>
+                            <input type="text" class="form-input" id="vatTax" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">إجمالي المبلغ شامل الضريبة</label>
+                            <input type="text" class="form-input" id="vatTotal" readonly>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section id="settings" class="page-section">
+                <div class="section-header">
+                    <h2 class="section-title">الإعدادات</h2>
+                    <p class="section-subtitle">إعدادات النظام والشركة</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Invoice Modal -->
+    <div id="invoiceModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">إنشاء فاتورة جديدة</h3>
+                <button class="modal-close" onclick="hideModal('invoiceModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <form id="invoiceForm">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">رقم الفاتورة</label>
+                        <input type="text" class="form-input" id="invoiceNumber" value="INV-2024-004" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">تاريخ الفاتورة</label>
+                        <input type="date" class="form-input" id="invoiceDate" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">العميل</label>
+                        <select class="form-select" id="customer" required>
+                            <option value="">اختر العميل</option>
+                            <option value="aramco">أرامكو السعودية</option>
+                            <option value="rashid">مجموعة الراشد</option>
+                            <option value="advanced">شركة المعادن المتقدمة</option>
+                            <option value="national">الشركة الوطنية للمعادن</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">طريقة الدفع</label>
+                        <select class="form-select" id="paymentMethod">
+                            <option value="cash">نقداً</option>
+                            <option value="transfer">تحويل بنكي</option>
+                            <option value="check">شيك</option>
+                        </select>
+                    </div>
+                </div>
+
+                <h4>بنود الفاتورة</h4>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">نوع المعدن</label>
+                        <select class="form-select" id="itemType">
+                            <option value="">اختر نوع المعدن</option>
+                            <option value="steel_bars" data-price="1.50">قضبان الصلب</option>
+                            <option value="general_steel" data-price="1.20">حديد عام</option>
+                            <option value="cast_iron" data-price="1.00">حديد الزهر</option>
+                            <option value="copper" data-price="25.00">النحاس</option>
+                            <option value="aluminum" data-price="6.50">الألومنيوم</option>
+                            <option value="bronze" data-price="18.00">البرونز</option>
+                            <option value="bare_copper" data-price="30.00">النحاس العاري اللامع</option>
+                            <option value="copper_1" data-price="28.00">نحاس رقم 1</option>
+                            <option value="copper_2" data-price="25.00">نحاس رقم 2</option>
+                            <option value="copper_cable" data-price="28.00">كابل النحاس</option>
+                            <option value="b_cable" data-price="26.00">كابل B</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">الوزن (كيلو)</label>
+                        <input type="number" class="form-input" id="itemWeight" placeholder="0.00" step="0.01">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">السعر (ريال/كيلو)</label>
+                        <input type="number" class="form-input" id="itemRate" placeholder="0.00" step="0.01" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">المجموع</label>
+                        <input type="text" class="form-input" id="itemTotal" readonly>
+                    </div>
+                </div>
+
+                <button type="button" class="btn btn-secondary" onclick="addInvoiceItem()">
+                    <i class="fas fa-plus"></i> إضافة بند
+                </button>
+
+                <div class="items-list" id="invoiceItems">
+                    <div class="item-row" style="font-weight: bold; border-bottom: 2px solid var(--border-color);">
+                        <div>البند</div>
+                        <div>الوزن</div>
+                        <div>السعر</div>
+                        <div>المجموع</div>
+                        <div>إجراء</div>
+                    </div>
+                </div>
+
+                <div class="form-grid" style="margin-top: 2rem; border-top: 1px solid var(--border-color); padding-top: 1rem;">
+                    <div class="form-group">
+                        <label class="form-label">المجموع قبل الضريبة</label>
+                        <input type="text" class="form-input" id="subtotal" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">ضريبة القيمة المضافة (15%)</label>
+                        <input type="text" class="form-input" id="vatAmountModal" readonly>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">إجمالي المبلغ</label>
+                        <input type="text" class="form-input" id="totalAmount" readonly style="font-weight: bold; font-size: 1.1rem;">
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 1rem; justify-content: flex-end; margin-top: 2rem;">
+                    <button type="button" class="btn btn-secondary" onclick="hideModal('invoiceModal')">
+                        إلغاء
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="fas fa-save"></i> حفظ الفاتورة
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Global variables
+        let invoiceItems = [];
+        let currentSection = 'dashboard';
+
+        // Initialize the application
+        document.addEventListener('DOMContentLoaded', function() {
+            // Set current date for invoice
+            document.getElementById('invoiceDate').value = new Date().toISOString().split('T')[0];
+            
+            // Initialize charts
+            initializeCharts();
+            
+            // Setup event listeners
+            setupEventListeners();
+        });
+
+        // Navigation functions
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.page-section').forEach(section => {
+                section.classList.remove('active');
+            });
+            
+            // Remove active class from all nav links
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionId).classList.add('active');
+            
+            // Add active class to clicked nav link
+            event.target.closest('.nav-link').classList.add('active');
+            
+            currentSection = sectionId;
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('active');
+        }
+
+        // Modal functions
+        function showModal(modalId) {
+            document.getElementById(modalId).classList.add('active');
+        }
+
+        function hideModal(modalId) {
+            document.getElementById(modalId).classList.remove('active');
+        }
+
+        // Invoice functions
+        function setupEventListeners() {
+            // Item type change
+            document.getElementById('itemType').addEventListener('change', function() {
+                const selectedOption = this.options[this.selectedIndex];
+                const price = selectedOption.getAttribute('data-price');
+                document.getElementById('itemRate').value = price || '';
+                calculateItemTotal();
+            });
+
+            // Weight change
+            document.getElementById('itemWeight').addEventListener('input', calculateItemTotal);
+            document.getElementById('itemRate').addEventListener('input', calculateItemTotal);
+
+            // VAT calculator
+            document.getElementById('vatAmount').addEventListener('input', function() {
+                const amount = parseFloat(this.value) || 0;
+                const vat = amount * 0.15;
+                const total = amount + vat;
+                
+                document.getElementById('vatTax').value = 'SAR ' + vat.toFixed(2);
+                document.getElementById('vatTotal').value = 'SAR ' + total.toFixed(2);
+            });
+
+            // Invoice form submission
+            document.getElementById('invoiceForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                saveInvoice();
+            });
+        }
+
+        function calculateItemTotal() {
+            const weight = parseFloat(document.getElementById('itemWeight').value) || 0;
+            const rate = parseFloat(document.getElementById('itemRate').value) || 0;
+            const total = weight * rate;
+            document.getElementById('itemTotal').value = 'SAR ' + total.toFixed(2);
+        }
+
+        function addInvoiceItem() {
+            const itemType = document.getElementById('itemType');
+            const weight = document.getElementById('itemWeight').value;
+            const rate = document.getElementById('itemRate').value;
+            const total = document.getElementById('itemTotal').value;
+
+            if (!itemType.value || !weight || !rate) {
+                alert('يرجى ملء جميع بيانات البند');
+                return;
+            }
+
+            const item = {
+                type: itemType.options[itemType.selectedIndex].text,
+                weight: parseFloat(weight),
+                rate: parseFloat(rate),
+                total: parseFloat(weight) * parseFloat(rate)
+            };
+
+            invoiceItems.push(item);
+            renderInvoiceItems();
+            calculateInvoiceTotals();
+
+            // Clear form
+            itemType.value = '';
+            document.getElementById('itemWeight').value = '';
+            document.getElementById('itemRate').value = '';
+            document.getElementById('itemTotal').value = '';
+        }
+
+        function removeInvoiceItem(index) {
+            invoiceItems.splice(index, 1);
+            renderInvoiceItems();
+            calculateInvoiceTotals();
+        }
+
+        function renderInvoiceItems() {
+            const container = document.getElementById('invoiceItems');
+            
+            // Keep header row
+            const headerRow = container.firstElementChild;
+            container.innerHTML = '';
+            container.appendChild(headerRow);
+
+            invoiceItems.forEach((item, index) => {
+                const row = document.createElement('div');
+                row.className = 'item-row';
+                row.innerHTML = `
+                    <div>${item.type}</div>
+                    <div>${item.weight.toFixed(2)} كيلو</div>
+                    <div>SAR ${item.rate.toFixed(2)}</div>
+                    <div>SAR ${item.total.toFixed(2)}</div>
+                    <div>
+                        <button class="remove-item" onclick="removeInvoiceItem(${index})">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+                container.appendChild(row);
+            });
+        }
+
+        function calculateInvoiceTotals() {
+            const subtotal = invoiceItems.reduce((sum, item) => sum + item.total, 0);
+            const vat = subtotal * 0.15;
+            const total = subtotal + vat;
+
+            document.getElementById('subtotal').value = 'SAR ' + subtotal.toFixed(2);
+            document.getElementById('vatAmountModal').value = 'SAR ' + vat.toFixed(2);
+            document.getElementById('totalAmount').value = 'SAR ' + total.toFixed(2);
+        }
+
+        function saveInvoice() {
+            if (invoiceItems.length === 0) {
+                alert('يرجى إضافة بند واحد على الأقل للفاتورة');
+                return;
+            }
+
+            const invoiceData = {
+                number: document.getElementById('invoiceNumber').value,
+                date: document.getElementById('invoiceDate').value,
+                customer: document.getElementById('customer').value,
+                paymentMethod: document.getElementById('paymentMethod').value,
+                items: invoiceItems,
+                subtotal: invoiceItems.reduce((sum, item) => sum + item.total, 0),
+                vat: invoiceItems.reduce((sum, item) => sum + item.total, 0) * 0.15,
+                total: invoiceItems.reduce((sum, item) => sum + item.total, 0) * 1.15
+            };
+
+            console.log('Invoice saved:', invoiceData);
+            alert('تم حفظ الفاتورة بنجاح');
+            
+            // Reset form
+            document.getElementById('invoiceForm').reset();
+            invoiceItems = [];
+            renderInvoiceItems();
+            hideModal('invoiceModal');
+            
+            // Generate next invoice number
+            const currentNumber = parseInt(document.getElementById('invoiceNumber').value.split('-')[2]);
+            document.getElementById('invoiceNumber').value = `INV-2024-${(currentNumber + 1).toString().padStart(3, '0')}`;
+        }
+
+        // Chart initialization
+        function initializeCharts() {
+            const ctx = document.getElementById('salesChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['يناير', 'فبراير', 'مارس', 'أبريل', 'مايو', 'يونيو'],
+                    datasets: [{
+                        label: 'المبيعات (ريال سعودي)',
+                        data: [65000, 59000, 80000, 81000, 56000, 89670],
+                        borderColor: '#E58A43',
+                        backgroundColor: 'rgba(229, 138, 67, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: {
+                                color: '#ffffff'
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: {
+                                color: '#b0b0b0'
+                            },
+                            grid: {
+                                color: '#404040'
+                            }
+                        },
+                        y: {
+                            ticks: {
+                                color: '#b0b0b0'
+                            },
+                            grid: {
+                                color: '#404040'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Close modal when clicking outside
+        window.addEventListener('click', function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.classList.remove('active');
+            }
+        });
+
+        // Responsive sidebar toggle
+        window.addEventListener('resize', function() {
+            if (window.innerWidth > 768) {
+                document.getElementById('sidebar').classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>

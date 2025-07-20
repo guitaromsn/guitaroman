@@ -1,0 +1,43 @@
+{
+  "name": "amanat-al-kalima-erp",
+  "version": "1.0.0",
+  "description": "Professional ERP system for Amanat Al-Kalima Metal Scrap Trading Company (شركة أمانة الكلمة لتجارة خردة المعادن)",
+  "main": "public/index.html",
+  "scripts": {
+    "start": "python3 -m http.server 8080",
+    "dev": "python3 -m http.server 3000",
+    "serve": "python3 -m http.server 8080"
+  },
+  "keywords": [
+    "erp",
+    "saudi-arabia",
+    "metal-scrap",
+    "vat",
+    "arabic",
+    "invoice",
+    "amanat-al-kalima"
+  ],
+  "author": "Amanat Al-Kalima Company",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/guitaromsn/guitaroman.git"
+  },
+  "homepage": ".",
+  "engines": {
+    "node": ">=14.0.0",
+    "python": ">=3.6.0"
+  },
+  "browserslist": [
+    "> 1%",
+    "last 2 versions",
+    "not dead"
+  ],
+  "dependencies": {},
+  "devDependencies": {},
+  "cdn": {
+    "fontawesome": "https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css",
+    "googlefonts": "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap",
+    "chartjs": "https://cdn.jsdelivr.net/npm/chart.js"
+  }
+}
