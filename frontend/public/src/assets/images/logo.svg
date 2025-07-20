@@ -1,0 +1,20 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background Circle -->
+  <circle cx="100" cy="100" r="95" fill="#d2691e" stroke="#ff8c00" stroke-width="10"/>
+  
+  <!-- Company Initials in Arabic/English -->
+  <g transform="translate(100, 100)">
+    <!-- Arabic Letter أ (Alif) -->
+    <path d="M-30 -40 L-30 40 M-30 -20 L-10 -20" stroke="white" stroke-width="8" fill="none" stroke-linecap="round"/>
+    
+    <!-- Arabic Letter ك (Kaf) -->
+    <path d="M10 -30 Q30 -30 30 -10 Q30 10 10 10 M10 -10 L30 -10" stroke="white" stroke-width="6" fill="none" stroke-linecap="round"/>
+    
+    <!-- Decorative elements -->
+    <circle cx="0" cy="-60" r="4" fill="white"/>
+    <circle cx="0" cy="60" r="4" fill="white"/>
+  </g>
+  
+  <!-- Company name text -->
+  <text x="100" y="170" text-anchor="middle" fill="white" font-family="Arial" font-size="14" font-weight="bold">Amanat Al-Kalima</text>
+</svg>
