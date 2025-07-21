@@ -20,3 +20,26 @@ rad.json
 *.flf
 #Test results file
 TestResults.xml
+
+### Node.js ###
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+### Next.js ###
+.next/
+out/
+.vercel/
+
+### Temporary files ###
+/tmp/
+*.tmp
+*.log
+
+### Environment variables ###
+.env*
+
+### Build artifacts ###
+dist/
+build/

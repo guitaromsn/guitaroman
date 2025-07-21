@@ -1,0 +1,23 @@
+<!-- Amanat Al-Kalima Company Logo SVG Placeholder -->
+<svg width="200" height="60" viewBox="0 0 200 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="200" height="60" rx="8" fill="#0a0a0a"/>
+  
+  <!-- Logo Symbol -->
+  <circle cx="30" cy="30" r="15" fill="#ea580c" opacity="0.2"/>
+  <circle cx="30" cy="30" r="10" fill="#ea580c"/>
+  <path d="M26 26h8v8h-8z" fill="#ffffff" opacity="0.9"/>
+  
+  <!-- Company Name -->
+  <text x="55" y="25" font-family="Inter, sans-serif" font-size="14" font-weight="600" fill="#ffffff">
+    Amanat Al-Kalima
+  </text>
+  <text x="55" y="40" font-family="Inter, sans-serif" font-size="10" fill="#a1a1aa">
+    Company
+  </text>
+  
+  <!-- Arabic Text -->
+  <text x="55" y="52" font-family="Inter, sans-serif" font-size="8" fill="#71717a" direction="rtl">
+    أمانة الكلمة
+  </text>
+</svg>
