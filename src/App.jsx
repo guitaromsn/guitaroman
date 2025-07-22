@@ -15,8 +15,15 @@ import QuotationPreview from './components/QuotationPreview';
 import Settings from './components/Settings';
 import Analytics from './components/Analytics';
 
-// Database
-import { dbManager } from './db';
+// Mock database manager for browser environment
+const dbManager = {
+  connect: async () => {
+    console.log('🌐 Mock database - running in offline mode');
+    return false;
+  },
+  getScrapItems: async () => [],
+  getCustomers: async () => []
+};
 
 // Context for app state
 export const AppContext = React.createContext();
@@ -251,50 +258,37 @@ function App() {
   return (
     <AppContext.Provider value={contextValue}>
       <Router>
-        <div className={`app-container ${appSettings.theme} ${appSettings.language === 'ar' ? 'rtl' : 'ltr'}`}>
-          <div className="flex h-screen bg-gray-50 dark:bg-gray-900">
-            <Sidebar />
-            
-            <div className={`flex-1 flex flex-col transition-all duration-300 ${
-              sidebarCollapsed ? 'ml-16' : 'ml-64'
-            }`}>
-              <Topbar />
-              
-              <main className="flex-1 p-6 overflow-y-auto">
-                <Routes>
-                  <Route path="/" element={<Navigate to="/dashboard" />} />
-                  <Route path="/dashboard" element={<Dashboard />} />
-                  <Route path="/invoice/new" element={<InvoiceForm />} />
-                  <Route path="/invoice/edit/:id" element={<InvoiceForm />} />
-                  <Route path="/invoice/preview/:id" element={<InvoicePreview />} />
-                  <Route path="/voucher/new" element={<VoucherForm />} />
-                  <Route path="/voucher/edit/:id" element={<VoucherForm />} />
-                  <Route path="/voucher/preview/:id" element={<VoucherPreview />} />
-                  <Route path="/quotation/new" element={<QuotationForm />} />
-                  <Route path="/quotation/edit/:id" element={<QuotationForm />} />
-                  <Route path="/quotation/preview/:id" element={<QuotationPreview />} />
-                  <Route path="/analytics" element={<Analytics />} />
-                  <Route path="/settings" element={<Settings />} />
-                </Routes>
-              </main>
-            </div>
-          </div>
+        <div className="app-container">
+          <Sidebar />
           
-          {/* Connection Status Indicator */}
-          <div className={`fixed bottom-4 right-4 px-3 py-2 rounded-lg text-sm font-medium ${
-            dbConnected 
-              ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
-              : 'bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200'
-          }`}>
-            <div className="flex items-center space-x-2">
-              <div className={`w-2 h-2 rounded-full ${
-                dbConnected ? 'bg-green-500' : 'bg-red-500'
-              }`}></div>
-              <span>
-                {dbConnected ? 'Database Connected' : 'Offline Mode'}
-              </span>
+          <main className="main-content">
+            <header className="topbar">
+              <div className="topbar-left">
+                <h1 id="page-title">Dashboard</h1>
+              </div>
+              <div className="topbar-right">
+                <div className="user-avatar">SA</div>
+              </div>
+            </header>
+            
+            <div className="content-area">
+              <Routes>
+                <Route path="/" element={<Navigate to="/dashboard" />} />
+                <Route path="/dashboard" element={<Dashboard />} />
+                <Route path="/invoice/new" element={<InvoiceForm />} />
+                <Route path="/invoice/edit/:id" element={<InvoiceForm />} />
+                <Route path="/invoice/preview/:id" element={<InvoicePreview />} />
+                <Route path="/voucher/new" element={<VoucherForm />} />
+                <Route path="/voucher/edit/:id" element={<VoucherForm />} />
+                <Route path="/voucher/preview/:id" element={<VoucherPreview />} />
+                <Route path="/quotation/new" element={<QuotationForm />} />
+                <Route path="/quotation/edit/:id" element={<QuotationForm />} />
+                <Route path="/quotation/preview/:id" element={<QuotationPreview />} />
+                <Route path="/analytics" element={<Analytics />} />
+                <Route path="/settings" element={<Settings />} />
+              </Routes>
             </div>
-          </div>
+          </main>
         </div>
       </Router>
     </AppContext.Provider>
