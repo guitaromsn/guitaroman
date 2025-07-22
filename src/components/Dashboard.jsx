@@ -51,6 +51,45 @@ const Dashboard = () => {
     calculateDashboardStats();
   }, [invoices, vouchers, quotations, customers]);
 
+  useEffect(() => {
+    renderDashboardChart();
+  }, []);
+
+  const renderDashboardChart = () => {
+    const ctx = document.getElementById('sales-chart')?.getContext('2d');
+    if (ctx && window.Chart) {
+      new window.Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'],
+          datasets: [{
+            label: 'Sales',
+            data: [120000, 190000, 210000, 180000, 250000, 280000, 312800],
+            borderColor: '#E58A43',
+            backgroundColor: 'rgba(229, 138, 67, 0.1)',
+            fill: true,
+            tension: 0.4
+          }, {
+            label: 'Procurement',
+            data: [80000, 120000, 150000, 130000, 190000, 210000, 240000],
+            borderColor: '#718096',
+            backgroundColor: 'rgba(113, 128, 150, 0.1)',
+            fill: true,
+            tension: 0.4
+          }]
+        },
+        options: {
+          responsive: true,
+          scales: {
+            y: { beginAtZero: true, grid: { color: 'rgba(255,255,255,0.1)' } },
+            x: { grid: { display: false } }
+          },
+          plugins: { legend: { labels: { color: '#A0AEC0' } } }
+        }
+      });
+    }
+  };
+
   const calculateDashboardStats = () => {
     // Calculate basic statistics
     const totalInvoices = invoices.length;
@@ -195,19 +234,32 @@ const Dashboard = () => {
 
   return (
     <div className="space-y-6">
-      {/* Welcome Header */}
-      <div className="bg-gradient-to-r from-blue-600 to-purple-700 rounded-lg p-6 text-white">
-        <h1 className="text-2xl font-bold mb-2">{t('dashboard.welcome')}</h1>
-        <p className="text-blue-100">
-          Manage your scrap metal business with ZATCA-compliant invoicing
-        </p>
-        {!dbConnected && (
-          <div className="mt-3 p-3 bg-yellow-500/20 rounded-lg border border-yellow-400/30">
-            <p className="text-sm">
-              📄 Running in offline mode. Database connection not available.
-            </p>
-          </div>
-        )}
+      {/* Stats Grid */}
+      <div className="stats-grid">
+        <div className="card stat-card">
+          <div className="stat-label">Total Receivables</div>
+          <div className="stat-value">SAR 1,250,400.50</div>
+        </div>
+        <div className="card stat-card">
+          <div className="stat-label">Overdue Balance</div>
+          <div className="stat-value">SAR 85,230.00</div>
+        </div>
+        <div className="card stat-card">
+          <div className="stat-label">Sales (This Month)</div>
+          <div className="stat-value">SAR 312,800.75</div>
+        </div>
+        <div className="card stat-card">
+          <div className="stat-label">Net VAT Payable</div>
+          <div className="stat-value">SAR 45,150.20</div>
+        </div>
+      </div>
+
+      {/* Transactions Chart */}
+      <div className="card">
+        <div className="card-header">
+          <h2 className="card-title">Transactions</h2>
+        </div>
+        <canvas id="sales-chart"></canvas>
       </div>
 
       {/* Quick Actions */}

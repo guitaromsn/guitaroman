@@ -1,6 +1,6 @@
 import React from 'react';
 import { useTranslation } from 'react-i18next';
-import { FileText, Download, Print } from 'lucide-react';
+import { FileText, Download, Printer } from 'lucide-react';
 
 const InvoicePreview = () => {
   const { t } = useTranslation();
@@ -15,7 +15,7 @@ const InvoicePreview = () => {
           </div>
           <div className="flex space-x-3">
             <button className="btn-secondary flex items-center space-x-2">
-              <Print className="h-4 w-4" />
+              <Printer className="h-4 w-4" />
               <span>Print</span>
             </button>
             <button className="btn-primary flex items-center space-x-2">

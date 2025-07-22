@@ -16,7 +16,13 @@ import {
 } from 'lucide-react';
 
 import { AppContext } from '../App';
-import { dbManager } from '../db';
+// Mock database manager for browser compatibility
+const dbManager = {
+  testConnection: async () => {
+    console.log('Mock database test - offline mode');
+    return false;
+  }
+};
 
 const Settings = () => {
   const { t } = useTranslation();

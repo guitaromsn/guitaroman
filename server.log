@@ -1,0 +1,62 @@
+
+> zatca-scrap-business-app@1.0.0 start
+> react-scripts start
+
+(node:10895) [DEP_WEBPACK_DEV_SERVER_ON_AFTER_SETUP_MIDDLEWARE] DeprecationWarning: 'onAfterSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
+(Use `node --trace-deprecation ...` to show where the warning was created)
+(node:10895) [DEP_WEBPACK_DEV_SERVER_ON_BEFORE_SETUP_MIDDLEWARE] DeprecationWarning: 'onBeforeSetupMiddleware' option is deprecated. Please use the 'setupMiddlewares' option.
+Starting the development server...
+
+Failed to compile.
+
+Error: Cannot find module '@tailwindcss/forms'
+Require stack:
+- /home/engine/project/tailwind.config.js
+ERROR in ./src/styles/main.css (./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[1].oneOf[5].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[1].oneOf[5].use[2]!./node_modules/source-map-loader/dist/cjs.js!./src/styles/main.css)
+Module build failed (from ./node_modules/postcss-loader/dist/cjs.js):
+Error: Cannot find module '@tailwindcss/forms'
+Require stack:
+- /home/engine/project/tailwind.config.js
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1212:15)
+    at Function.resolve (node:internal/modules/helpers:193:19)
+    at _resolve (/home/engine/project/node_modules/jiti/dist/jiti.js:1:246378)
+    at jiti (/home/engine/project/node_modules/jiti/dist/jiti.js:1:249092)
+    at /home/engine/project/tailwind.config.js:56:5
+    at evalModule (/home/engine/project/node_modules/jiti/dist/jiti.js:1:251913)
+    at jiti (/home/engine/project/node_modules/jiti/dist/jiti.js:1:249841)
+    at /home/engine/project/node_modules/tailwindcss/lib/lib/load-config.js:52:26
+    at loadConfig (/home/engine/project/node_modules/tailwindcss/lib/lib/load-config.js:62:6)
+    at getTailwindConfig (/home/engine/project/node_modules/tailwindcss/lib/lib/setupTrackingContext.js:71:116)
+
+webpack compiled with 1 error
+Compiling...
+Failed to compile.
+
+Error: Cannot find module '@tailwindcss/forms'
+Require stack:
+- /home/engine/project/tailwind.config.js
+ERROR in ./src/styles/main.css (./node_modules/css-loader/dist/cjs.js??ruleSet[1].rules[1].oneOf[5].use[1]!./node_modules/postcss-loader/dist/cjs.js??ruleSet[1].rules[1].oneOf[5].use[2]!./node_modules/source-map-loader/dist/cjs.js!./src/styles/main.css)
+Module build failed (from ./node_modules/postcss-loader/dist/cjs.js):
+Error: Cannot find module '@tailwindcss/forms'
+Require stack:
+- /home/engine/project/tailwind.config.js
+    at Module._resolveFilename (node:internal/modules/cjs/loader:1212:15)
+    at Function.resolve (node:internal/modules/helpers:193:19)
+    at _resolve (/home/engine/project/node_modules/jiti/dist/jiti.js:1:246378)
+    at jiti (/home/engine/project/node_modules/jiti/dist/jiti.js:1:249092)
+    at /home/engine/project/tailwind.config.js:56:5
+    at evalModule (/home/engine/project/node_modules/jiti/dist/jiti.js:1:251913)
+    at jiti (/home/engine/project/node_modules/jiti/dist/jiti.js:1:249841)
+    at /home/engine/project/node_modules/tailwindcss/lib/lib/load-config.js:52:26
+    at loadConfig (/home/engine/project/node_modules/tailwindcss/lib/lib/load-config.js:62:6)
+    at getTailwindConfig (/home/engine/project/node_modules/tailwindcss/lib/lib/setupTrackingContext.js:71:116)
+    at /home/engine/project/node_modules/tailwindcss/lib/lib/setupTrackingContext.js:100:92
+    at /home/engine/project/node_modules/tailwindcss/lib/processTailwindFeatures.js:46:11
+    at plugins (/home/engine/project/node_modules/tailwindcss/lib/plugin.js:38:69)
+    at LazyResult.runOnRoot (/home/engine/project/node_modules/postcss/lib/lazy-result.js:361:16)
+    at LazyResult.runAsync (/home/engine/project/node_modules/postcss/lib/lazy-result.js:290:26)
+    at LazyResult.async (/home/engine/project/node_modules/postcss/lib/lazy-result.js:192:30)
+    at LazyResult.then (/home/engine/project/node_modules/postcss/lib/lazy-result.js:436:17)
+    at process.processTicksAndRejections (node:internal/process/task_queues:95:5)
+
+webpack compiled with 1 error

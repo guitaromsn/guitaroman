@@ -1,4 +1,12 @@
-const sql = require('mssql');
+// Browser-compatible database manager
+// In browser environment, mssql is not available, so we'll use a fallback
+let sql;
+try {
+  sql = require('mssql');
+} catch (e) {
+  // Browser environment fallback
+  sql = null;
+}
 
 // Database configuration
 const dbConfig = {
@@ -26,6 +34,13 @@ class DatabaseManager {
 
   async connect() {
     try {
+      // Check if we're in a browser environment
+      if (!sql) {
+        console.log('🌐 Browser environment detected - using offline mode');
+        this.isConnected = false;
+        return false;
+      }
+
       if (this.pool) {
         await this.pool.close();
       }
